@@ -1,32 +1,5 @@
 import 'package:flutter/material.dart';
 
-// class TitleTextField extends StatefulWidget {
-//   const TitleTextField({super.key});
-
-//   @override
-//   State<TitleTextField> createState() => _TitleTextFieldState();
-// }
-
-// class _TitleTextFieldState extends State<TitleTextField> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return const TextField(
-//       cursorColor: Colors.white,
-//       cursorHeight: 42,
-//       maxLines: null,
-//       style: TextStyle(fontSize: 42, color: Colors.white, height: 1),
-//       decoration: InputDecoration(
-//         focusedBorder: InputBorder.none,
-//         border: InputBorder.none,
-//         enabledBorder: InputBorder.none,
-//         filled: true,
-//         hintText: 'Title',
-//         hintStyle: TextStyle(fontSize: 42, color: Color(0xFF9A9A9A), height: 1),
-//       ),
-//     );
-//   }
-// }
-
 enum _TextFieldType { title, content }
 
 class NewNoteTextField extends StatefulWidget {
@@ -45,32 +18,44 @@ class NewNoteTextField extends StatefulWidget {
 class _NewNoteTextFieldState extends State<NewNoteTextField> {
   @override
   Widget build(BuildContext context) {
-    double fontSize;
+    final double fontSize;
     final String hintText;
+    final double? textHeight;
+
     switch (widget._type) {
       case _TextFieldType.title:
         fontSize = 42;
         hintText = 'Title';
+        textHeight = 1.2;
+
         break;
       case _TextFieldType.content:
         fontSize = 18;
         hintText = 'Type something...';
+        textHeight = 1.8;
+
         break;
     }
     return TextField(
+      strutStyle: StrutStyle(height: textHeight),
       controller: widget.controller,
       cursorColor: Colors.white,
-      cursorHeight: fontSize,
       maxLines: null,
-      style: TextStyle(fontSize: fontSize, color: Colors.white, height: 1.02),
+      style: TextStyle(
+        fontSize: fontSize,
+        color: Colors.white,
+        //height: textHeight,
+      ),
       decoration: InputDecoration(
         focusedBorder: InputBorder.none,
         border: InputBorder.none,
         enabledBorder: InputBorder.none,
-        // filled: true,
+        isCollapsed: true,
         hintText: hintText,
         hintStyle: TextStyle(
-            fontSize: fontSize, color: const Color(0xFF9A9A9A), height: 1.02),
+            fontSize: fontSize,
+            color: const Color(0xFF9A9A9A),
+            height: textHeight),
       ),
     );
   }

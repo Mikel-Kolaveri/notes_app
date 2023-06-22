@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:notes_app/pages/new_note_page/src/save_changes_dialog.dart';
-import 'package:notes_app/pages/new_note_page/src/title_textfield.dart';
+import 'package:notes_app/pages/new_note_page/src/new_note_textfield.dart';
 
 import '../../ui/custom_icon_button.dart';
 import '../../ui/gap.dart';
@@ -24,6 +24,7 @@ class _NewNotePageState extends ConsumerState<NewNotePage> {
         context.pop();
       } else {
         showDialog(
+          barrierDismissible: false,
           context: context,
           builder: (context) => const SaveChangesDialog(),
         );
