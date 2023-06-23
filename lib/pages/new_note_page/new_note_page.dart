@@ -29,7 +29,14 @@ final noteContentProvider = StateProvider<String>((ref) {
 //     StateProvider<_NewNotePageState>((ref) => _NewNotePageState());
 
 class NewNotePage extends ConsumerStatefulWidget {
-  const NewNotePage({super.key});
+  const NewNotePage({
+    super.key,
+    this.title = '',
+    this.content = '',
+  });
+
+  final String title;
+  final String content;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _NewNotePageState();
@@ -38,10 +45,12 @@ class NewNotePage extends ConsumerStatefulWidget {
 class _NewNotePageState extends ConsumerState<NewNotePage> {
   @override
   Widget build(BuildContext context) {
-    final TextEditingController titleController = TextEditingController();
-    final TextEditingController contentController = TextEditingController();
-    ref.watch(noteContentProvider.notifier).state = titleController.text;
-    ref.watch(noteContentProvider.notifier).state = contentController.text;
+    final TextEditingController titleController = TextEditingController(
+        text: widget.title.isNotEmpty ? widget.title : '');
+    final TextEditingController contentController = TextEditingController(
+        text: widget.content.isNotEmpty ? widget.content : '');
+    // ref.watch(noteContentProvider.notifier).state = titleController.text;
+    // ref.watch(noteContentProvider.notifier).state = contentController.text;
 
     void onBackButtonTap() {
       if (contentController.text.isEmpty) {
