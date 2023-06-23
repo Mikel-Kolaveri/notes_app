@@ -1,17 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:notes_app/pages/home_page/src/header.dart';
 import 'package:notes_app/ui/gap.dart';
 import 'package:notes_app/ui/notes.dart';
-
-final _colors = [
-  Colors.yellow,
-  Colors.green,
-  Colors.pink,
-  Colors.red,
-  Colors.lightBlue
-];
 
 final _notesEmptyWidget = [
   const Spacer(),
@@ -28,25 +21,22 @@ final _notesEmptyWidget = [
   const Spacer()
 ];
 
-class HomePage extends StatefulWidget {
+final homePageStateProvider =
+    Provider<_HomePageState>((ref) => _HomePageState());
+
+List<NotesWidget> notes = [];
+
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  List<NotesWidget> notes = [];
-
-  void _addNote() {
-    setState(() {
-      notes.add(NotesWidget(color: _colors[notes.length % _colors.length]));
-    });
-  }
-
+class _HomePageState extends ConsumerState<HomePage> {
   void _editNewNote() {
     context.push('/new_note');
-    _addNote();
+    //addNote();
   }
 
   @override
