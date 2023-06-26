@@ -49,9 +49,9 @@ class _NewNotePageState extends ConsumerState<NewNotePage> {
   Widget build(BuildContext context) {
     // ref.watch(isReadOnlyProvider.notifier).state = widget.isReadOnly;
     final TextEditingController titleController = TextEditingController(
-        text: widget.title.isNotEmpty ? widget.title : '');
+        text: widget.title.isNotEmpty ? widget.title : null);
     final TextEditingController contentController = TextEditingController(
-        text: widget.content.isNotEmpty ? widget.content : '');
+        text: widget.content.isNotEmpty ? widget.content : null);
 
     var isReadOnly = ref.watch(isReadOnlyProvider);
 
@@ -69,6 +69,13 @@ class _NewNotePageState extends ConsumerState<NewNotePage> {
           );
         }
       }
+    }
+
+    void readOnlSwitch() {
+      // TODO: Fix title clearing when switching
+      ref.watch(isReadOnlyProvider.notifier).state = !isReadOnly;
+
+      isReadOnly = !isReadOnly;
     }
 
     // void onReadOnlyButtonTap() {
@@ -112,7 +119,9 @@ class _NewNotePageState extends ConsumerState<NewNotePage> {
                     children: [
                       CustomIconButton(
                           icon: Icons.remove_red_eye_outlined,
-                          onPressed: () {}),
+                          onPressed: () {
+                            readOnlSwitch();
+                          }),
                       const HGap(16),
                       CustomIconButton(
                           icon: Icons.save_outlined, onPressed: addNote),
@@ -123,11 +132,13 @@ class _NewNotePageState extends ConsumerState<NewNotePage> {
         const VGap(32),
         NewNoteTextField.title(
           controller: titleController,
-          enabled: !isReadOnly,
+          enabled: isReadOnly ? false : true,
         ),
         const VGap(16),
         NewNoteTextField.content(
-            controller: contentController, enabled: !isReadOnly),
+          controller: contentController,
+          enabled: isReadOnly ? false : true,
+        ),
       ],
     );
   }
