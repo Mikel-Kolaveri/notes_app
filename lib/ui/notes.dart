@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class NotesWidget extends ConsumerStatefulWidget {
@@ -19,11 +20,24 @@ class NotesWidget extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _NotesWidgetState();
 }
 
+final titleTextProvider = StateProvider<String>((ref) {
+  return '';
+});
+
+final contentTextProvider = StateProvider<String>((ref) {
+  return '';
+});
+
 class _NotesWidgetState extends ConsumerState<NotesWidget> {
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      Container(
+    return GestureDetector(
+      onTap: () {
+        ref.watch(titleTextProvider.notifier).state = widget.title;
+        ref.watch(contentTextProvider.notifier).state = widget.content;
+        context.go('/open_note');
+      },
+      child: Container(
         padding: const EdgeInsets.all(16),
         width: double.infinity,
         decoration: BoxDecoration(
@@ -35,33 +49,6 @@ class _NotesWidgetState extends ConsumerState<NotesWidget> {
           style: GoogleFonts.nunito(color: Colors.black, fontSize: 25),
         ),
       ),
-    ]);
+    );
   }
 }
-
-
-// ignore: must_be_immutable
-// class NoteWidget extends ConsumerWidget {
-//   NoteWidget({
-//     super.key,
-//     this.title = '',
-//     this.counter = 0,
-//   }) {
-//     counter++;
-//   }
-
-//   final String title;
-//   static int _counter = 0;
-//   int counter;
-
-//   @override
-//   Widget build(BuildContext context, WidgetRef ref) {
-//     return Container(
-//       color: Colors.pink,
-//       child: Text(
-//         '$title counter is $counter',
-//         style: GoogleFonts.nunito(color: Colors.black, fontSize: 25),
-//       ),
-//     );
-//   }
-// }

@@ -25,18 +25,20 @@ final noteContentProvider = StateProvider<String>((ref) {
   return '';
 });
 
+final isReadOnlyProvider = StateProvider<bool>((ref) {
+  return false;
+});
+
 // final newNotePageStateProvider =
 //     StateProvider<_NewNotePageState>((ref) => _NewNotePageState());
 
 class NewNotePage extends ConsumerStatefulWidget {
-  const NewNotePage({
-    super.key,
-    this.title = '',
-    this.content = '',
-  });
+  const NewNotePage(
+      {super.key, this.title = '', this.content = '', this.isReadOnly = false});
 
   final String title;
   final String content;
+  final bool isReadOnly;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _NewNotePageState();
@@ -45,24 +47,37 @@ class NewNotePage extends ConsumerStatefulWidget {
 class _NewNotePageState extends ConsumerState<NewNotePage> {
   @override
   Widget build(BuildContext context) {
+    // ref.watch(isReadOnlyProvider.notifier).state = widget.isReadOnly;
     final TextEditingController titleController = TextEditingController(
         text: widget.title.isNotEmpty ? widget.title : '');
     final TextEditingController contentController = TextEditingController(
         text: widget.content.isNotEmpty ? widget.content : '');
-    // ref.watch(noteContentProvider.notifier).state = titleController.text;
-    // ref.watch(noteContentProvider.notifier).state = contentController.text;
+
+    var isReadOnly = ref.watch(isReadOnlyProvider);
 
     void onBackButtonTap() {
-      if (contentController.text.isEmpty) {
-        context.pop();
+      if (widget.isReadOnly) {
+        context.go('/');
       } else {
-        showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (context) => const SaveChangesDialog(),
-        );
+        if (titleController.text.isEmpty) {
+          context.pop();
+        } else {
+          showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (context) => const SaveChangesDialog(),
+          );
+        }
       }
     }
+
+    // void onReadOnlyButtonTap() {
+    //   if (ref.watch(titleTextProvider).isEmpty) {
+    //     ref.watch(isReadOnlyProvider.notifier).state = !isReadOnly;
+    //     isReadOnly = ref.watch(isReadOnlyProvider);
+    //   }
+    //   context.go('/open_note');
+    // }
 
     void addNote() {
       if (contentController.text.isNotEmpty) {
@@ -87,23 +102,32 @@ class _NewNotePageState extends ConsumerState<NewNotePage> {
                 onPressed: onBackButtonTap,
                 icon: Icons.arrow_back_ios),
             const Spacer(),
-            CustomIconButton(
-                icon: Icons.remove_red_eye_outlined,
-                onPressed: () {
-                  setState(() {});
-                }),
-            const HGap(16),
-            CustomIconButton(icon: Icons.save_outlined, onPressed: addNote),
+            widget.isReadOnly
+                ? CustomIconButton(
+                    icon: Icons.edit,
+                    onPressed: () {
+                      // TODO
+                    })
+                : Row(
+                    children: [
+                      CustomIconButton(
+                          icon: Icons.remove_red_eye_outlined,
+                          onPressed: () {}),
+                      const HGap(16),
+                      CustomIconButton(
+                          icon: Icons.save_outlined, onPressed: addNote),
+                    ],
+                  )
           ],
         ),
         const VGap(32),
         NewNoteTextField.title(
           controller: titleController,
+          enabled: !isReadOnly,
         ),
         const VGap(16),
         NewNoteTextField.content(
-          controller: contentController,
-        ),
+            controller: contentController, enabled: !isReadOnly),
       ],
     );
   }

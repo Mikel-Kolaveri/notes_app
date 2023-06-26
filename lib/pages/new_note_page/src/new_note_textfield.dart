@@ -3,13 +3,16 @@ import 'package:flutter/material.dart';
 enum _TextFieldType { title, content }
 
 class NewNoteTextField extends StatefulWidget {
-  const NewNoteTextField.title({super.key, required this.controller})
+  const NewNoteTextField.title(
+      {super.key, required this.controller, this.enabled})
       : _type = _TextFieldType.title;
-  const NewNoteTextField.content({super.key, required this.controller})
+  const NewNoteTextField.content(
+      {super.key, required this.controller, this.enabled})
       : _type = _TextFieldType.content;
 
   final _TextFieldType _type;
   final TextEditingController controller;
+  final bool? enabled;
 
   @override
   State<NewNoteTextField> createState() => _NewNoteTextFieldState();
@@ -36,7 +39,8 @@ class _NewNoteTextFieldState extends State<NewNoteTextField> {
 
         break;
     }
-    return TextField(
+    return TextFormField(
+      enabled: widget.enabled,
       strutStyle: StrutStyle(height: textHeight),
       controller: widget.controller,
       cursorColor: Colors.white,
@@ -47,6 +51,7 @@ class _NewNoteTextFieldState extends State<NewNoteTextField> {
         //height: textHeight,
       ),
       decoration: InputDecoration(
+        disabledBorder: InputBorder.none,
         focusedBorder: InputBorder.none,
         border: InputBorder.none,
         enabledBorder: InputBorder.none,
