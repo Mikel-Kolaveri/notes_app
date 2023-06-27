@@ -48,9 +48,7 @@ class SaveChangesDialog extends StatelessWidget {
                   child: DialogButton(
                     text: 'Save',
                     color: const Color(0xFF2FBE71),
-                    onPressed: () {
-                      print('save');
-                    },
+                    onPressed: () {},
                   )),
             ],
           )

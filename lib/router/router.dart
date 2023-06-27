@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:notes_app/pages/home_page/home_page.dart';
 import 'package:notes_app/pages/new_note_page/new_note_page.dart';
-import 'package:notes_app/ui/notes.dart';
 
 final router = GoRouter(routes: [
   ShellRoute(
@@ -57,8 +56,8 @@ class ReadOnlyNote extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return NewNotePage(
-      title: ref.watch(titleTextProvider),
-      content: ref.watch(contentTextProvider),
+      title: ref.watch(noteTitleProvider),
+      content: ref.watch(noteContentProvider),
       isReadOnly: true,
     );
   }

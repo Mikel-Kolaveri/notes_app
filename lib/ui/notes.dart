@@ -20,24 +20,25 @@ class NotesWidget extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _NotesWidgetState();
 }
 
-final titleTextProvider = StateProvider<String>((ref) {
-  return '';
-});
+// final titleTextProvider = StateProvider<String>((ref) {
+//   return '';
+// });
 
-final contentTextProvider = StateProvider<String>((ref) {
-  return '';
-});
+// final contentTextProvider = StateProvider<String>((ref) {
+//   return '';
+// });
 
 class _NotesWidgetState extends ConsumerState<NotesWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        ref.watch(titleTextProvider.notifier).state = widget.title;
-        ref.watch(contentTextProvider.notifier).state = widget.content;
-        context.go('/open_note');
+        // ref.watch(titleTextProvider.notifier).state = widget.title;
+        // ref.watch(contentTextProvider.notifier).state = widget.content;
+        context.push('/open_note');
       },
       child: Container(
+        margin: const EdgeInsets.only(bottom: 16),
         padding: const EdgeInsets.all(16),
         width: double.infinity,
         decoration: BoxDecoration(
@@ -45,7 +46,7 @@ class _NotesWidgetState extends ConsumerState<NotesWidget> {
           borderRadius: const BorderRadius.all(Radius.circular(12)),
         ),
         child: Text(
-          '${widget.title} ',
+          widget.title,
           style: GoogleFonts.nunito(color: Colors.black, fontSize: 25),
         ),
       ),

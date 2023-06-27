@@ -34,10 +34,10 @@ final isReadOnlyProvider = StateProvider<bool>((ref) {
 
 class NewNotePage extends ConsumerStatefulWidget {
   const NewNotePage(
-      {super.key, this.title = '', this.content = '', this.isReadOnly = false});
+      {super.key, this.title, this.content, this.isReadOnly = false});
 
-  final String title;
-  final String content;
+  final String? title;
+  final String? content;
   final bool isReadOnly;
 
   @override
@@ -47,17 +47,19 @@ class NewNotePage extends ConsumerStatefulWidget {
 class _NewNotePageState extends ConsumerState<NewNotePage> {
   @override
   Widget build(BuildContext context) {
-    // ref.watch(isReadOnlyProvider.notifier).state = widget.isReadOnly;
-    final TextEditingController titleController = TextEditingController(
-        text: widget.title.isNotEmpty ? widget.title : null);
-    final TextEditingController contentController = TextEditingController(
-        text: widget.content.isNotEmpty ? widget.content : null);
+    final title = ref.watch(noteTitleProvider);
+    final content = ref.watch(noteContentProvider);
 
     var isReadOnly = ref.watch(isReadOnlyProvider);
 
+    final TextEditingController titleController =
+        TextEditingController(text: title);
+    final TextEditingController contentController =
+        TextEditingController(text: content);
+
     void onBackButtonTap() {
       if (widget.isReadOnly) {
-        context.go('/');
+        context.go('/'); // TODO: fix logic
       } else {
         if (titleController.text.isEmpty) {
           context.pop();
@@ -71,31 +73,24 @@ class _NewNotePageState extends ConsumerState<NewNotePage> {
       }
     }
 
-    void readOnlSwitch() {
-      // TODO: Fix title clearing when switching
+    void readOnlySwitch() {
+      ref.watch(noteTitleProvider.notifier).state = titleController.text;
+      ref.watch(noteContentProvider.notifier).state = contentController.text;
       ref.watch(isReadOnlyProvider.notifier).state = !isReadOnly;
 
       isReadOnly = !isReadOnly;
     }
 
-    // void onReadOnlyButtonTap() {
-    //   if (ref.watch(titleTextProvider).isEmpty) {
-    //     ref.watch(isReadOnlyProvider.notifier).state = !isReadOnly;
-    //     isReadOnly = ref.watch(isReadOnlyProvider);
-    //   }
-    //   context.go('/open_note');
-    // }
-
     void addNote() {
       if (contentController.text.isNotEmpty) {
-        setState(() {
-          notes.add(NotesWidget(
-            color: noteColors[notes.length % noteColors.length],
-            content: contentController.text,
-            title: titleController.text,
-          ));
-          context.pop();
-        });
+        ref.watch(noteTitleProvider.notifier).state = titleController.text;
+        ref.watch(noteContentProvider.notifier).state = contentController.text;
+        notes.add(NotesWidget(
+          color: noteColors[notes.length % noteColors.length],
+          content: ref.watch(noteContentProvider),
+          title: ref.watch(noteTitleProvider),
+        ));
+        context.pop();
       }
     }
 
@@ -109,18 +104,14 @@ class _NewNotePageState extends ConsumerState<NewNotePage> {
                 onPressed: onBackButtonTap,
                 icon: Icons.arrow_back_ios),
             const Spacer(),
-            widget.isReadOnly
-                ? CustomIconButton(
-                    icon: Icons.edit,
-                    onPressed: () {
-                      // TODO
-                    })
+            isReadOnly
+                ? CustomIconButton(icon: Icons.edit, onPressed: readOnlySwitch)
                 : Row(
                     children: [
                       CustomIconButton(
                           icon: Icons.remove_red_eye_outlined,
                           onPressed: () {
-                            readOnlSwitch();
+                            readOnlySwitch();
                           }),
                       const HGap(16),
                       CustomIconButton(

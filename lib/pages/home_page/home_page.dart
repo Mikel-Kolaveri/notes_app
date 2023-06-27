@@ -36,7 +36,6 @@ class HomePage extends ConsumerStatefulWidget {
 class _HomePageState extends ConsumerState<HomePage> {
   void _editNewNote() {
     context.push('/new_note');
-    //addNote();
   }
 
   @override
