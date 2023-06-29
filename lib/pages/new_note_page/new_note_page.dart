@@ -83,6 +83,7 @@ class _NewNotePageState extends ConsumerState<NewNotePage> {
         color: noteColors[notes.length % noteColors.length],
         content: ref.watch(noteContentProvider),
         title: ref.watch(noteTitleProvider),
+        key: UniqueKey(),
       ));
 
       context.pop();
