@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../pages/new_note_page/new_note_page.dart';
 
 class NotesWidget extends ConsumerStatefulWidget {
   const NotesWidget({
@@ -20,22 +21,15 @@ class NotesWidget extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _NotesWidgetState();
 }
 
-// final titleTextProvider = StateProvider<String>((ref) {
-//   return '';
-// });
-
-// final contentTextProvider = StateProvider<String>((ref) {
-//   return '';
-// });
-
 class _NotesWidgetState extends ConsumerState<NotesWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // ref.watch(titleTextProvider.notifier).state = widget.title;
-        // ref.watch(contentTextProvider.notifier).state = widget.content;
         context.push('/open_note');
+        ref.watch(noteTitleProvider.notifier).state = widget.title;
+        ref.watch(noteContentProvider.notifier).state = widget.content;
+        ref.watch(isReadOnlyProvider.notifier).state = false;
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),

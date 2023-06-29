@@ -29,9 +29,6 @@ final isReadOnlyProvider = StateProvider<bool>((ref) {
   return false;
 });
 
-// final newNotePageStateProvider =
-//     StateProvider<_NewNotePageState>((ref) => _NewNotePageState());
-
 class NewNotePage extends ConsumerStatefulWidget {
   const NewNotePage(
       {super.key, this.title, this.content, this.isReadOnly = false});
@@ -82,15 +79,20 @@ class _NewNotePageState extends ConsumerState<NewNotePage> {
     }
 
     void addNote() {
+      notes.add(NotesWidget(
+        color: noteColors[notes.length % noteColors.length],
+        content: ref.watch(noteContentProvider),
+        title: ref.watch(noteTitleProvider),
+      ));
+
+      context.pop();
+    }
+
+    void createNote() {
       if (contentController.text.isNotEmpty) {
         ref.watch(noteTitleProvider.notifier).state = titleController.text;
         ref.watch(noteContentProvider.notifier).state = contentController.text;
-        notes.add(NotesWidget(
-          color: noteColors[notes.length % noteColors.length],
-          content: ref.watch(noteContentProvider),
-          title: ref.watch(noteTitleProvider),
-        ));
-        context.pop();
+        addNote();
       }
     }
 
@@ -115,7 +117,7 @@ class _NewNotePageState extends ConsumerState<NewNotePage> {
                           }),
                       const HGap(16),
                       CustomIconButton(
-                          icon: Icons.save_outlined, onPressed: addNote),
+                          icon: Icons.save_outlined, onPressed: createNote),
                     ],
                   )
           ],

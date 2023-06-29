@@ -6,6 +6,8 @@ import 'package:notes_app/pages/home_page/src/header.dart';
 import 'package:notes_app/ui/gap.dart';
 import 'package:notes_app/ui/notes.dart';
 
+import '../new_note_page/new_note_page.dart';
+
 final _notesEmptyWidget = [
   const Spacer(),
   Column(
@@ -36,6 +38,9 @@ class HomePage extends ConsumerStatefulWidget {
 class _HomePageState extends ConsumerState<HomePage> {
   void _editNewNote() {
     context.push('/new_note');
+    ref.watch(noteTitleProvider.notifier).state = '';
+    ref.watch(noteContentProvider.notifier).state = '';
+    ref.watch(isReadOnlyProvider.notifier).state = false;
   }
 
   @override
