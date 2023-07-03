@@ -3,11 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:notes_app/pages/home_page/home_page.dart';
+import 'package:notes_app/ui/notes/src/notes_methods.dart';
 import 'package:uuid/uuid.dart';
-import '../pages/new_note_page/new_note_page.dart';
+import '../../pages/new_note_page/new_note_page.dart';
 
+final noteIdProvider = StateProvider<String>((ref) {
+  return '';
+});
+
+// ignore: must_be_immutable
 class NotesWidget extends ConsumerStatefulWidget {
+  //TODO: create a class to store the objects instead of changing the widget from within
   NotesWidget({
     super.key,
     this.title = 'Title',
@@ -15,9 +21,9 @@ class NotesWidget extends ConsumerStatefulWidget {
     this.content = '',
   }) : id = const Uuid().v4();
 
-  final String title;
+  String title;
   final Color color;
-  final String content;
+  String content;
   final String id;
 
   @override
@@ -25,20 +31,12 @@ class NotesWidget extends ConsumerStatefulWidget {
 }
 
 class _NotesWidgetState extends ConsumerState<NotesWidget> {
-  void deleteNote() {
-    setState(() {
-      notes.removeWhere((note) => note.id == widget.id);
-    });
-  }
-
-  void updateNote() {
-    final note = notes.firstWhere((note) => note.id == widget.id);
-  }
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        ref.watch(isNewNoteProvider.notifier).state = false;
+        ref.watch(noteIdProvider.notifier).state = widget.id;
         context.push('/open_note');
         ref.watch(noteTitleProvider.notifier).state = widget.title;
         ref.watch(noteContentProvider.notifier).state = widget.content;
@@ -62,7 +60,7 @@ class _NotesWidgetState extends ConsumerState<NotesWidget> {
             ),
             IconButton(
                 onPressed: () {
-                  deleteNote();
+                  ref.watch(noteslistProvider.notifier).deleteNote(widget.id);
                 },
                 icon: const Icon(Icons.delete))
           ],
