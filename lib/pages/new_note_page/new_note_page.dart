@@ -79,6 +79,9 @@ class _NewNotePageState extends ConsumerState<NewNotePage> {
     }
 
     void readOnlySwitch() {
+      ref.watch(noteTitleProvider.notifier).state = titleController.text;
+      ref.watch(noteContentProvider.notifier).state = contentController.text;
+      // Set the state of title and content if the user is editing a new note, so they don't reset on readOnlySwitch
       ref.watch(isReadOnlyProvider.notifier).state = !isReadOnly;
       isReadOnly = !isReadOnly;
     }
