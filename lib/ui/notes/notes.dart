@@ -3,19 +3,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../pages/new_note_page/new_note_page.dart';
+import 'package:notes_app/ui/notes/src/notes_methods.dart';
+import 'package:uuid/uuid.dart';
+import '../../pages/new_note_page/new_note_page.dart';
 
+final noteIdProvider = StateProvider<String>((ref) {
+  return '';
+});
+
+// ignore: must_be_immutable
 class NotesWidget extends ConsumerStatefulWidget {
-  const NotesWidget({
+  //TODO: create a class to store the objects instead of changing the widget from within
+  NotesWidget({
     super.key,
     this.title = 'Title',
     required this.color,
     this.content = '',
-  });
+  }) : id = const Uuid().v4();
 
-  final String title;
+  String title;
   final Color color;
-  final String content;
+  String content;
+  final String id;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _NotesWidgetState();
@@ -26,6 +35,8 @@ class _NotesWidgetState extends ConsumerState<NotesWidget> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        ref.watch(isNewNoteProvider.notifier).state = false;
+        ref.watch(noteIdProvider.notifier).state = widget.id;
         context.push('/open_note');
         ref.watch(noteTitleProvider.notifier).state = widget.title;
         ref.watch(noteContentProvider.notifier).state = widget.content;
@@ -39,9 +50,20 @@ class _NotesWidgetState extends ConsumerState<NotesWidget> {
           color: widget.color,
           borderRadius: const BorderRadius.all(Radius.circular(12)),
         ),
-        child: Text(
-          widget.title,
-          style: GoogleFonts.nunito(color: Colors.black, fontSize: 25),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                widget.title,
+                style: GoogleFonts.nunito(color: Colors.black, fontSize: 25),
+              ),
+            ),
+            IconButton(
+                onPressed: () {
+                  ref.watch(noteslistProvider.notifier).deleteNote(widget.id);
+                },
+                icon: const Icon(Icons.delete))
+          ],
         ),
       ),
     );

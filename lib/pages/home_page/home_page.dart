@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:notes_app/pages/home_page/src/header.dart';
 import 'package:notes_app/ui/gap.dart';
-import 'package:notes_app/ui/notes.dart';
+import 'package:notes_app/ui/notes/src/notes_methods.dart';
 
 import '../new_note_page/new_note_page.dart';
 
@@ -23,11 +23,6 @@ final _notesEmptyWidget = [
   const Spacer()
 ];
 
-final homePageStateProvider =
-    Provider<_HomePageState>((ref) => _HomePageState());
-
-List<NotesWidget> notes = [];
-
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
@@ -40,11 +35,13 @@ class _HomePageState extends ConsumerState<HomePage> {
     context.push('/new_note');
     ref.watch(noteTitleProvider.notifier).state = '';
     ref.watch(noteContentProvider.notifier).state = '';
+    ref.watch(isNewNoteProvider.notifier).state = true;
     ref.watch(isReadOnlyProvider.notifier).state = false;
   }
 
   @override
   Widget build(BuildContext context) {
+    final notes = ref.watch(noteslistProvider);
     return Stack(
       children: [
         CustomScrollView(
