@@ -62,31 +62,12 @@ class _NewNotePageState extends ConsumerState<NewNotePage> {
     final TextEditingController contentController =
         TextEditingController(text: content);
 
-    void onBackButtonTap() {
-      if (widget.isReadOnly) {
-        context.go('/'); // TODO: fix logic
-      } else {
-        if (titleController.text.isEmpty) {
-          context.pop();
-        } else {
-          showDialog(
-            barrierDismissible: false,
-            context: context,
-            builder: (context) => const SaveChangesDialog(),
-          );
-        }
-      }
-    }
-
-    void readOnlySwitch() {
-      ref.watch(isReadOnlyProvider.notifier).state = !isReadOnly;
-      isReadOnly = !isReadOnly;
-    }
-
     void createNote() {
-      if (contentController.text.isNotEmpty) {
+      if (contentController.text.isNotEmpty ||
+          titleController.text.isNotEmpty) {
         ref.watch(noteTitleProvider.notifier).state = titleController.text;
         ref.watch(noteContentProvider.notifier).state = contentController.text;
+
         notesMethods.addNote(NotesWidget(
           color: noteColors[notes.length % noteColors.length],
           content: ref.watch(noteContentProvider),
@@ -94,7 +75,7 @@ class _NewNotePageState extends ConsumerState<NewNotePage> {
           key: UniqueKey(),
         ));
 
-        context.pop();
+        ref.watch(isNewNoteProvider.notifier).state = false;
       }
     }
 
@@ -104,9 +85,54 @@ class _NewNotePageState extends ConsumerState<NewNotePage> {
             ref.watch(noteIdProvider),
             titleController.text,
             contentController.text);
+        ref.watch(noteTitleProvider.notifier).state = titleController.text;
+        ref.watch(noteContentProvider.notifier).state = contentController.text;
       } else {
         createNote();
       }
+    }
+
+    void onBackButtonTap() {
+      if (isNewNote) {
+        if (titleController.text.isEmpty && contentController.text.isEmpty) {
+          context.pop();
+        } else {
+          showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (context) => SaveChangesDialog(onSaveButtonTap: () {
+              saveNote();
+              context.pop();
+              context.pop();
+            }),
+          );
+        }
+      } else {
+        if (titleController.text == title &&
+            contentController.text == content) {
+          context.pop();
+        } else {
+          showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (context) => SaveChangesDialog(
+              onSaveButtonTap: () {
+                saveNote();
+                context.pop();
+                context.pop();
+              },
+            ),
+          );
+        }
+      }
+    }
+
+    void readOnlySwitch() {
+      ref.watch(noteTitleProvider.notifier).state = titleController.text;
+      ref.watch(noteContentProvider.notifier).state = contentController.text;
+      // Set the state of title and content if the user is editing a new note, so they don't reset on readOnlySwitch
+      ref.watch(isReadOnlyProvider.notifier).state = !isReadOnly;
+      isReadOnly = !isReadOnly;
     }
 
     return SingleChildScrollView(
