@@ -62,17 +62,66 @@ class _NewNotePageState extends ConsumerState<NewNotePage> {
     final TextEditingController contentController =
         TextEditingController(text: content);
 
-    void onBackButtonTap() {
-      if (widget.isReadOnly) {
-        context.go('/'); // TODO: fix logic
+    void createNote() {
+      if (contentController.text.isNotEmpty ||
+          titleController.text.isNotEmpty) {
+        ref.watch(noteTitleProvider.notifier).state = titleController.text;
+        ref.watch(noteContentProvider.notifier).state = contentController.text;
+
+        notesMethods.addNote(NotesWidget(
+          color: noteColors[notes.length % noteColors.length],
+          content: ref.watch(noteContentProvider),
+          title: ref.watch(noteTitleProvider),
+          key: UniqueKey(),
+        ));
+
+        ref.watch(isNewNoteProvider.notifier).state = false;
+      }
+    }
+
+    void saveNote() {
+      if (!isNewNote) {
+        ref.watch(noteslistProvider.notifier).updateNote(
+            ref.watch(noteIdProvider),
+            titleController.text,
+            contentController.text);
+        ref.watch(noteTitleProvider.notifier).state = titleController.text;
+        ref.watch(noteContentProvider.notifier).state = contentController.text;
       } else {
-        if (titleController.text.isEmpty) {
+        createNote();
+      }
+    }
+
+    void onBackButtonTap() {
+      if (isNewNote) {
+        if (titleController.text.isEmpty && contentController.text.isEmpty) {
           context.pop();
         } else {
           showDialog(
             barrierDismissible: false,
             context: context,
-            builder: (context) => const SaveChangesDialog(),
+            builder: (context) => SaveChangesDialog(onSaveButtonTap: () {
+              saveNote();
+              context.pop();
+              context.pop();
+            }),
+          );
+        }
+      } else {
+        if (titleController.text == title &&
+            contentController.text == content) {
+          context.pop();
+        } else {
+          showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (context) => SaveChangesDialog(
+              onSaveButtonTap: () {
+                saveNote();
+                context.pop();
+                context.pop();
+              },
+            ),
           );
         }
       }
@@ -84,32 +133,6 @@ class _NewNotePageState extends ConsumerState<NewNotePage> {
       // Set the state of title and content if the user is editing a new note, so they don't reset on readOnlySwitch
       ref.watch(isReadOnlyProvider.notifier).state = !isReadOnly;
       isReadOnly = !isReadOnly;
-    }
-
-    void createNote() {
-      if (contentController.text.isNotEmpty) {
-        ref.watch(noteTitleProvider.notifier).state = titleController.text;
-        ref.watch(noteContentProvider.notifier).state = contentController.text;
-        notesMethods.addNote(NotesWidget(
-          color: noteColors[notes.length % noteColors.length],
-          content: ref.watch(noteContentProvider),
-          title: ref.watch(noteTitleProvider),
-          key: UniqueKey(),
-        ));
-
-        context.pop();
-      }
-    }
-
-    void saveNote() {
-      if (!isNewNote) {
-        ref.watch(noteslistProvider.notifier).updateNote(
-            ref.watch(noteIdProvider),
-            titleController.text,
-            contentController.text);
-      } else {
-        createNote();
-      }
     }
 
     return SingleChildScrollView(

@@ -1,13 +1,21 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
 import 'package:notes_app/pages/new_note_page/src/dialog_button.dart';
 import 'package:notes_app/ui/gap.dart';
 
-class SaveChangesDialog extends StatelessWidget {
-  const SaveChangesDialog({super.key});
+class SaveChangesDialog extends ConsumerWidget {
+  const SaveChangesDialog({
+    super.key,
+    required this.onSaveButtonTap,
+  });
+
+  final VoidCallback onSaveButtonTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Dialog(
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(10))),
@@ -48,7 +56,7 @@ class SaveChangesDialog extends StatelessWidget {
                   child: DialogButton(
                     text: 'Save',
                     color: const Color(0xFF2FBE71),
-                    onPressed: () {},
+                    onPressed: onSaveButtonTap,
                   )),
             ],
           )
