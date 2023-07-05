@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:notes_app/pages/home_page/src/header.dart';
 import 'package:notes_app/ui/gap.dart';
-import 'package:notes_app/ui/notes/src/notes_methods.dart';
 
 import '../new_note_page/new_note_page.dart';
 
@@ -41,7 +40,8 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final notes = ref.watch(noteslistProvider);
+    // final notes = ref.watch(noteslistProvider);
+    final notesList = ref.watch(searchListProvider);
     return Stack(
       children: [
         CustomScrollView(
@@ -52,7 +52,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 children: [
                   const Header(),
                   const VGap(16),
-                  if (notes.isEmpty) ..._notesEmptyWidget else ...notes,
+                  if (notesList.isEmpty) ..._notesEmptyWidget else ...notesList,
                 ],
               ),
             ),
