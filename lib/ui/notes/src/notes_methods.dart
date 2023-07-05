@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:notes_app/ui/notes/notes.dart';
 
-class StringGenerator extends Notifier<List<NotesWidget>> {
+class NotesMethods extends Notifier<List<NotesWidget>> {
   @override
   List<NotesWidget> build() {
     return []; //throw UnimplementedError();
@@ -16,6 +16,8 @@ class StringGenerator extends Notifier<List<NotesWidget>> {
     state = [...state];
   }
 
+  //TODO: fix bug where if you try to save a just saved note you get an error, steps:
+  // Create new note, save with save button, change title or content, press save again
   void updateNote(String id, String title, String content) {
     final noteToedit = state.firstWhere((note) => note.id == id);
     noteToedit.title = title;
@@ -28,4 +30,4 @@ class StringGenerator extends Notifier<List<NotesWidget>> {
 }
 
 var noteslistProvider =
-    NotifierProvider<StringGenerator, List<NotesWidget>>(StringGenerator.new);
+    NotifierProvider<NotesMethods, List<NotesWidget>>(NotesMethods.new);
