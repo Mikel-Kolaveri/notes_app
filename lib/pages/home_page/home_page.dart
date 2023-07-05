@@ -7,21 +7,6 @@ import 'package:notes_app/ui/gap.dart';
 
 import '../new_note_page/new_note_page.dart';
 
-final _notesEmptyWidget = [
-  const Spacer(),
-  Column(
-    children: [
-      Image.asset('assets/create_your_first_note.png'),
-      Text(
-        'Create your first note',
-        style: GoogleFonts.nunito(
-            color: Colors.white, fontSize: 20, fontWeight: FontWeight.w100),
-      ),
-    ],
-  ),
-  const Spacer()
-];
-
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
@@ -40,8 +25,28 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // final notes = ref.watch(noteslistProvider);
     final notesList = ref.watch(searchListProvider);
+    final isUserSearching = ref.watch(isUserSearchingProvider);
+
+    final notesEmptyWidget = [
+      const Spacer(),
+      Column(
+        children: [
+          Image.asset(isUserSearching
+              ? 'assets/search_no_file_found.png'
+              : 'assets/create_your_first_note.png'),
+          Text(
+            isUserSearching
+                ? 'File not found. Try searching again.'
+                : 'Create your first note',
+            style: GoogleFonts.nunito(
+                color: Colors.white, fontSize: 20, fontWeight: FontWeight.w100),
+          ),
+        ],
+      ),
+      const Spacer()
+    ];
+
     return Stack(
       children: [
         CustomScrollView(
@@ -52,7 +57,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 children: [
                   const Header(),
                   const VGap(16),
-                  if (notesList.isEmpty) ..._notesEmptyWidget else ...notesList,
+                  if (notesList.isEmpty) ...notesEmptyWidget else ...notesList,
                 ],
               ),
             ),
