@@ -11,6 +11,10 @@ final searchListProvider = StateProvider<List<NotesWidget>>((ref) {
   return ref.watch(noteslistProvider);
 });
 
+final isUserSearchingProvider = StateProvider<bool>((ref) {
+  return false;
+});
+
 class Header extends ConsumerStatefulWidget {
   const Header({super.key});
 
@@ -23,6 +27,7 @@ final showTextFieldProvider = StateProvider<bool>((ref) => true);
 class _HeaderState extends ConsumerState<Header> {
   @override
   Widget build(BuildContext context) {
+    final isUserSearchingNotifier = ref.watch(isUserSearchingProvider.notifier);
     bool textFieldshown = ref.watch(showTextFieldProvider);
     TextEditingController controller = TextEditingController();
 
@@ -65,6 +70,7 @@ class _HeaderState extends ConsumerState<Header> {
                         controller.text = '';
                         ref.watch(searchListProvider.notifier).state =
                             ref.watch(noteslistProvider);
+                        isUserSearchingNotifier.state = false;
                       },
                     ),
                     filled: true,
@@ -76,7 +82,12 @@ class _HeaderState extends ConsumerState<Header> {
                   if (value.isEmpty) {
                     ref.watch(searchListProvider.notifier).state =
                         ref.watch(noteslistProvider);
+
+                    isUserSearchingNotifier.state = false;
+                  } else {
+                    isUserSearchingNotifier.state = true;
                   }
+
                   ref.watch(searchListProvider.notifier).state = ref
                       .watch(noteslistProvider)
                       .where((note) => note.title.contains(value))
@@ -85,6 +96,7 @@ class _HeaderState extends ConsumerState<Header> {
                 onTapOutside: (_) {
                   if (controller.text.isEmpty) {
                     showHideTextField();
+                    isUserSearchingNotifier.state = false;
                   }
                 },
               ),
