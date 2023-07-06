@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:notes_app/ui/notes/notes.dart';
+import 'package:notes_app/ui/notes/note_widget.dart';
 
 class NotesMethods extends Notifier<List<NotesWidget>> {
   @override
