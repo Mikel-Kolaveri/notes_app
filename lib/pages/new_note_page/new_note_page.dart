@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:notes_app/pages/new_note_page/src/save_changes_dialog.dart';
 import 'package:notes_app/pages/new_note_page/src/new_note_textfield.dart';
-import 'package:notes_app/ui/notes/notes.dart';
+import 'package:notes_app/ui/notes/note_widget.dart';
 import 'package:notes_app/ui/notes/src/notes_methods.dart';
 
 import '../../ui/custom_icon_button.dart';

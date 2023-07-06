@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:notes_app/ui/notes/notes.dart';
+import 'package:notes_app/ui/notes/note_widget.dart';
 import 'package:notes_app/ui/notes/src/notes_methods.dart';
 
 import '../../../ui/custom_icon_button.dart';
@@ -54,53 +54,55 @@ class _HeaderState extends ConsumerState<Header> {
       height: 56,
       child: textFieldshown
           ? wigetOptions1
-          : Expanded(
-              child: TextFormField(
-                style: const TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                    suffixIcon: IconButton(
-                      icon: const Icon(
-                        Icons.clear,
-                        color: Colors.grey,
+          : Row(children: [
+              Expanded(
+                child: TextFormField(
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                      suffixIcon: IconButton(
+                        icon: const Icon(
+                          Icons.clear,
+                          color: Colors.grey,
+                        ),
+                        onPressed: () {
+                          if (controller.text.isEmpty) {
+                            showHideTextField();
+                          }
+                          controller.text = '';
+                          ref.watch(searchListProvider.notifier).state =
+                              ref.watch(noteslistProvider);
+                          isUserSearchingNotifier.state = false;
+                        },
                       ),
-                      onPressed: () {
-                        if (controller.text.isEmpty) {
-                          showHideTextField();
-                        }
-                        controller.text = '';
-                        ref.watch(searchListProvider.notifier).state =
-                            ref.watch(noteslistProvider);
-                        isUserSearchingNotifier.state = false;
-                      },
-                    ),
-                    filled: true,
-                    fillColor: const Color(0xFF3B3B3B),
-                    border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(30)))),
-                controller: controller,
-                onChanged: (value) {
-                  if (value.isEmpty) {
-                    ref.watch(searchListProvider.notifier).state =
-                        ref.watch(noteslistProvider);
+                      filled: true,
+                      fillColor: const Color(0xFF3B3B3B),
+                      border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(30)))),
+                  controller: controller,
+                  onChanged: (value) {
+                    if (value.isEmpty) {
+                      ref.watch(searchListProvider.notifier).state =
+                          ref.watch(noteslistProvider);
 
-                    isUserSearchingNotifier.state = false;
-                  } else {
-                    isUserSearchingNotifier.state = true;
-                  }
+                      isUserSearchingNotifier.state = false;
+                    } else {
+                      isUserSearchingNotifier.state = true;
+                    }
 
-                  ref.watch(searchListProvider.notifier).state = ref
-                      .watch(noteslistProvider)
-                      .where((note) => note.title.contains(value))
-                      .toList();
-                },
-                onTapOutside: (_) {
-                  if (controller.text.isEmpty) {
-                    showHideTextField();
-                    isUserSearchingNotifier.state = false;
-                  }
-                },
+                    ref.watch(searchListProvider.notifier).state = ref
+                        .watch(noteslistProvider)
+                        .where((note) => note.title.contains(value))
+                        .toList();
+                  },
+                  onTapOutside: (_) {
+                    if (controller.text.isEmpty) {
+                      showHideTextField();
+                      isUserSearchingNotifier.state = false;
+                    }
+                  },
+                ),
               ),
-            ),
+            ]),
     );
   }
 }
