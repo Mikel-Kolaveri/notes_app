@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:notes_app/pages/new_note_page/src/save_changes_dialog.dart';
 import 'package:notes_app/pages/new_note_page/src/new_note_textfield.dart';
 import 'package:notes_app/ui/notes/note_widget.dart';
+import 'package:notes_app/ui/notes/src/note.dart';
 import 'package:notes_app/ui/notes/src/notes_methods.dart';
 
 import '../../ui/custom_icon_button.dart';
@@ -48,7 +49,6 @@ class NewNotePage extends ConsumerStatefulWidget {
 class _NewNotePageState extends ConsumerState<NewNotePage> {
   @override
   Widget build(BuildContext context) {
-    final notes = ref.watch(noteslistProvider);
     final notesMethods = ref.watch(noteslistProvider.notifier);
 
     final title = ref.watch(noteTitleProvider);
@@ -68,14 +68,16 @@ class _NewNotePageState extends ConsumerState<NewNotePage> {
         ref.watch(noteTitleProvider.notifier).state = titleController.text;
         ref.watch(noteContentProvider.notifier).state = contentController.text;
 
-        notesMethods.addNote(NotesWidget(
-          color: noteColors[notes.length % noteColors.length],
-          content: ref.watch(noteContentProvider),
-          title: ref.watch(noteTitleProvider),
-          key: UniqueKey(),
-        ));
+        notesMethods.addNote(
+          Note(
+            content: ref.watch(noteContentProvider),
+            title: ref.watch(noteTitleProvider),
+          ),
+        );
 
         ref.watch(isNewNoteProvider.notifier).state = false;
+        ref.watch(noteIdProvider.notifier).state =
+            ref.watch(noteslistProvider).last.id;
       }
     }
 

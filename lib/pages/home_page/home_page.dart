@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:notes_app/pages/home_page/src/header.dart';
 import 'package:notes_app/ui/gap.dart';
+import 'package:notes_app/ui/notes/note_widget.dart';
 
 import '../new_note_page/new_note_page.dart';
 
@@ -26,6 +27,13 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     final notesList = ref.watch(searchListProvider);
+    final notesWidgetList = List.generate(
+        notesList.length,
+        (index) => NotesWidget(
+            color: noteColors[index %
+                noteColors
+                    .length], // TODO: fix Note color not persisting when deleting notes from list
+            note: notesList[index]));
     final isUserSearching = ref.watch(isUserSearchingProvider);
 
     final notesEmptyWidget = [
@@ -57,7 +65,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                 children: [
                   const Header(),
                   const VGap(16),
-                  if (notesList.isEmpty) ...notesEmptyWidget else ...notesList,
+                  if (notesList.isEmpty)
+                    ...notesEmptyWidget
+                  else
+                    ...notesWidgetList,
                 ],
               ),
             ),

@@ -2,12 +2,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:notes_app/ui/notes/note_widget.dart';
 import 'package:notes_app/ui/notes/src/notes_methods.dart';
 
 import '../../../ui/custom_icon_button.dart';
+import '../../../ui/notes/src/note.dart';
 
-final searchListProvider = StateProvider<List<NotesWidget>>((ref) {
+final searchListProvider = StateProvider<List<Note>>((ref) {
   return ref.watch(noteslistProvider);
 });
 
