@@ -47,6 +47,16 @@ class NewNotePage extends ConsumerStatefulWidget {
 }
 
 class _NewNotePageState extends ConsumerState<NewNotePage> {
+  final FocusNode titleFocusNode = FocusNode();
+  final FocusNode contentFocusNode = FocusNode();
+  @override
+  void dispose() {
+    titleFocusNode.dispose();
+    contentFocusNode.dispose();
+
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final notesMethods = ref.watch(noteslistProvider.notifier);
@@ -57,10 +67,13 @@ class _NewNotePageState extends ConsumerState<NewNotePage> {
 
     final isNewNote = ref.watch(isNewNoteProvider);
 
-    final TextEditingController titleController =
-        TextEditingController(text: title);
-    final TextEditingController contentController =
-        TextEditingController(text: content);
+    final TextEditingController titleController = TextEditingController(
+      text: title,
+    );
+    final TextEditingController contentController = TextEditingController(
+      text: content,
+    );
+    // TODO: make changes to be able to call dispose method on controllers
 
     void createNote() {
       if (contentController.text.isNotEmpty ||
@@ -78,6 +91,10 @@ class _NewNotePageState extends ConsumerState<NewNotePage> {
         ref.watch(isNewNoteProvider.notifier).state = false;
         ref.watch(noteIdProvider.notifier).state =
             ref.watch(noteslistProvider).last.id;
+        // if it's a just created note, refer to the id of that note
+        // by referring to the last item of the notes list
+        titleFocusNode.unfocus();
+        contentFocusNode.unfocus();
       }
     }
 
@@ -89,6 +106,8 @@ class _NewNotePageState extends ConsumerState<NewNotePage> {
             contentController.text);
         ref.watch(noteTitleProvider.notifier).state = titleController.text;
         ref.watch(noteContentProvider.notifier).state = contentController.text;
+        titleFocusNode.unfocus();
+        contentFocusNode.unfocus();
       } else {
         createNote();
       }
@@ -169,11 +188,13 @@ class _NewNotePageState extends ConsumerState<NewNotePage> {
           NewNoteTextField.title(
             controller: titleController,
             enabled: isReadOnly ? false : true,
+            focusNode: titleFocusNode,
           ),
           const VGap(16),
           NewNoteTextField.content(
             controller: contentController,
             enabled: isReadOnly ? false : true,
+            focusNode: contentFocusNode,
           ),
         ],
       ),
