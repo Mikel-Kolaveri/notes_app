@@ -28,12 +28,12 @@ class _HomePageState extends ConsumerState<HomePage> {
   Widget build(BuildContext context) {
     final notesList = ref.watch(searchListProvider);
     final notesWidgetList = List.generate(
-        notesList.length,
-        (index) => NotesWidget(
-            color: noteColors[index %
-                noteColors
-                    .length], // TODO: fix Note color not persisting when deleting notes from list
-            note: notesList[index]));
+      notesList.length,
+      (index) => NotesWidget(
+          // key: UniqueKey(),
+          // TODO: fix Note color not persisting when deleting notes from list
+          note: notesList[index]),
+    );
     final isUserSearching = ref.watch(isUserSearchingProvider);
 
     final notesEmptyWidget = [

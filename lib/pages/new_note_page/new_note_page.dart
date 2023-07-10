@@ -18,6 +18,8 @@ final noteColors = [
   Colors.lightBlue
 ];
 
+final colorListIndexProvider = StateProvider<int>((ref) => 0);
+
 final noteTitleProvider = StateProvider<String>((ref) {
   return '';
 });
@@ -75,6 +77,8 @@ class _NewNotePageState extends ConsumerState<NewNotePage> {
     );
     // TODO: make changes to be able to call dispose method on controllers
 
+    int index = ref.watch(colorListIndexProvider);
+
     void createNote() {
       if (contentController.text.isNotEmpty ||
           titleController.text.isNotEmpty) {
@@ -85,8 +89,15 @@ class _NewNotePageState extends ConsumerState<NewNotePage> {
           Note(
             content: ref.watch(noteContentProvider),
             title: ref.watch(noteTitleProvider),
+            color: noteColors[index % noteColors.length],
           ),
         );
+
+        ref.watch(colorListIndexProvider.notifier).state++;
+
+        if (index == noteColors.length - 1) {
+          ref.watch(colorListIndexProvider.notifier).state = 0;
+        }
 
         ref.watch(isNewNoteProvider.notifier).state = false;
         ref.watch(noteIdProvider.notifier).state =

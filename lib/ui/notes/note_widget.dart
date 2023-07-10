@@ -14,12 +14,10 @@ final noteIdProvider = StateProvider<String>((ref) {
 class NotesWidget extends ConsumerStatefulWidget {
   const NotesWidget({
     super.key,
-    required this.color,
     required this.note,
   });
 
   final Note note;
-  final Color color;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _NotesWidgetState();
@@ -45,7 +43,7 @@ class _NotesWidgetState extends ConsumerState<NotesWidget> {
         padding: const EdgeInsets.all(16),
         width: double.infinity,
         decoration: BoxDecoration(
-          color: widget.color,
+          color: note.color,
           borderRadius: const BorderRadius.all(Radius.circular(12)),
         ),
         child: Row(
