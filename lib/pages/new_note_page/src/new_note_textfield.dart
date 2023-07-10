@@ -4,15 +4,16 @@ enum _TextFieldType { title, content }
 
 class NewNoteTextField extends StatefulWidget {
   const NewNoteTextField.title(
-      {super.key, required this.controller, this.enabled})
+      {super.key, required this.controller, this.enabled, this.focusNode})
       : _type = _TextFieldType.title;
   const NewNoteTextField.content(
-      {super.key, required this.controller, this.enabled})
+      {super.key, required this.controller, this.enabled, this.focusNode})
       : _type = _TextFieldType.content;
 
   final _TextFieldType _type;
   final TextEditingController controller;
   final bool? enabled;
+  final FocusNode? focusNode;
 
   @override
   State<NewNoteTextField> createState() => _NewNoteTextFieldState();
@@ -40,6 +41,7 @@ class _NewNoteTextFieldState extends State<NewNoteTextField> {
         break;
     }
     return TextFormField(
+      focusNode: widget.focusNode,
       enabled: widget.enabled,
       strutStyle: StrutStyle(height: textHeight),
       controller: widget.controller,
@@ -48,7 +50,6 @@ class _NewNoteTextFieldState extends State<NewNoteTextField> {
       style: TextStyle(
         fontSize: fontSize,
         color: Colors.white,
-        //height: textHeight,
       ),
       decoration: InputDecoration(
         disabledBorder: InputBorder.none,
