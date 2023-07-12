@@ -37,6 +37,7 @@ class _NotesWidgetState extends ConsumerState<NotesWidget> {
         ref.watch(noteTitleProvider.notifier).state = note.title;
         ref.watch(noteContentProvider.notifier).state = note.content;
         ref.watch(isReadOnlyProvider.notifier).state = false;
+        print(note.id);
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),

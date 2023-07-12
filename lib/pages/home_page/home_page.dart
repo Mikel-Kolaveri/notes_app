@@ -5,6 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:notes_app/pages/home_page/src/header.dart';
 import 'package:notes_app/ui/gap.dart';
 import 'package:notes_app/ui/notes/note_widget.dart';
+import 'package:notes_app/ui/notes/src/note.dart';
+import 'package:notes_app/ui/notes/src/notes_methods.dart';
 
 import '../new_note_page/new_note_page.dart';
 
@@ -27,13 +29,19 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     final notesList = ref.watch(searchListProvider);
+
+    final listOfNotes = ref.watch(noteslistProvider);
+
+    final titles = ref.watch(titlesProvider);
+    final contents = ref.watch(contentsProvider);
+
+    final localList = ref.watch(localListProvider);
+
     final notesWidgetList = List.generate(
-      notesList.length,
-      (index) => NotesWidget(
-          // key: UniqueKey(),
-          // TODO: fix Note color not persisting when deleting notes from list
-          note: notesList[index]),
+      localList.length,
+      (index) => NotesWidget(note: localList[index]),
     );
+
     final isUserSearching = ref.watch(isUserSearchingProvider);
 
     final notesEmptyWidget = [
