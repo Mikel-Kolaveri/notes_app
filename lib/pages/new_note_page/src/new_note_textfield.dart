@@ -1,0 +1,68 @@
+import 'package:flutter/material.dart';
+
+enum _TextFieldType { title, content }
+
+class NewNoteTextField extends StatefulWidget {
+  const NewNoteTextField.title(
+      {super.key, required this.controller, this.enabled, this.focusNode})
+      : _type = _TextFieldType.title;
+  const NewNoteTextField.content(
+      {super.key, required this.controller, this.enabled, this.focusNode})
+      : _type = _TextFieldType.content;
+
+  final _TextFieldType _type;
+  final TextEditingController controller;
+  final bool? enabled;
+  final FocusNode? focusNode;
+
+  @override
+  State<NewNoteTextField> createState() => _NewNoteTextFieldState();
+}
+
+class _NewNoteTextFieldState extends State<NewNoteTextField> {
+  @override
+  Widget build(BuildContext context) {
+    final double fontSize;
+    final String hintText;
+    final double? textHeight;
+
+    switch (widget._type) {
+      case _TextFieldType.title:
+        fontSize = 42;
+        hintText = 'Title';
+        textHeight = 1.2;
+
+        break;
+      case _TextFieldType.content:
+        fontSize = 18;
+        hintText = 'Type something...';
+        textHeight = 1.8;
+
+        break;
+    }
+    return TextFormField(
+      focusNode: widget.focusNode,
+      enabled: widget.enabled,
+      strutStyle: StrutStyle(height: textHeight),
+      controller: widget.controller,
+      cursorColor: Colors.white,
+      maxLines: null,
+      style: TextStyle(
+        fontSize: fontSize,
+        color: Colors.white,
+      ),
+      decoration: InputDecoration(
+        disabledBorder: InputBorder.none,
+        focusedBorder: InputBorder.none,
+        border: InputBorder.none,
+        enabledBorder: InputBorder.none,
+        isCollapsed: true,
+        hintText: hintText,
+        hintStyle: TextStyle(
+            fontSize: fontSize,
+            color: const Color(0xFF9A9A9A),
+            height: textHeight),
+      ),
+    );
+  }
+}
