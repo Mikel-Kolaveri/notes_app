@@ -5,7 +5,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:notes_app/pages/home_page/src/header.dart';
 import 'package:notes_app/ui/gap.dart';
 import 'package:notes_app/ui/notes/note_widget.dart';
+import 'package:notes_app/ui/notes/src/note.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../ui/notes/src/notes_methods.dart';
 import '../new_note_page/new_note_page.dart';
 
 class HomePage extends ConsumerStatefulWidget {
@@ -15,7 +18,43 @@ class HomePage extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _HomePageState();
 }
 
+final homePageStateProvider = Provider<_HomePageState>((ref) {
+  return _HomePageState();
+});
+
 class _HomePageState extends ConsumerState<HomePage> {
+  List<Note> notes = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadLocalData();
+  }
+
+  //Loading counter value on start
+  Future<void> loadLocalData() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    ref.watch(titlesProvider.notifier).state =
+        prefs.getStringList('titlesList') ?? [];
+
+    ref.watch(contentsProvider.notifier).state =
+        prefs.getStringList('contentsList') ?? [];
+
+    notes = ref.watch(notesToDisplayProvider.notifier).state = List.generate(
+        ref.watch(titlesProvider).length,
+        (index) => Note(
+            content: ref.watch(contentsProvider)[index],
+            title: ref.watch(titlesProvider)[index],
+            color: Colors.white));
+
+    ref.watch(noteslistProvider.notifier).state = notes;
+
+    print(ref.watch(titlesProvider));
+  }
+
+  //Incrementing counter after click
+
   void _editNewNote() {
     context.push('/new_note');
     ref.watch(noteTitleProvider.notifier).state = '';
@@ -27,14 +66,17 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     final notesList = ref.watch(searchListProvider);
+
+    final notesToDisplay = ref.watch(notesToDisplayProvider);
+
+    final isUserSearching = ref.watch(isUserSearchingProvider);
     final notesWidgetList = List.generate(
-      notesList.length,
+      notesToDisplay.length,
       (index) => NotesWidget(
           // key: UniqueKey(),
           // TODO: fix Note color not persisting when deleting notes from list
-          note: notesList[index]),
+          note: notesToDisplay[index]),
     );
-    final isUserSearching = ref.watch(isUserSearchingProvider);
 
     final notesEmptyWidget = [
       const Spacer(),
@@ -65,10 +107,13 @@ class _HomePageState extends ConsumerState<HomePage> {
                 children: [
                   const Header(),
                   const VGap(16),
-                  if (notesList.isEmpty)
-                    ...notesEmptyWidget
-                  else
-                    ...notesWidgetList,
+                  ...List.generate(
+                    ref.watch(notesToDisplayProvider).length,
+                    (index) {
+                      return NotesWidget(
+                          note: ref.watch(notesToDisplayProvider)[index]);
+                    },
+                  )
                 ],
               ),
             ),
