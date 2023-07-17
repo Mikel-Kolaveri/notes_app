@@ -24,6 +24,7 @@ final homePageStateProvider = Provider<_HomePageState>((ref) {
 
 class _HomePageState extends ConsumerState<HomePage> {
   List<Note> notes = [];
+  // int colorIndex = 0;
 
   @override
   void initState() {
@@ -41,16 +42,17 @@ class _HomePageState extends ConsumerState<HomePage> {
     ref.watch(contentsProvider.notifier).state =
         prefs.getStringList('contentsList') ?? [];
 
+    // colorIndex= ref.watch(colorListIndexProvider.notifier).state = prefs.getInt('colorString') ?? 0;
+
     notes = ref.watch(notesToDisplayProvider.notifier).state = List.generate(
         ref.watch(titlesProvider).length,
         (index) => Note(
             content: ref.watch(contentsProvider)[index],
             title: ref.watch(titlesProvider)[index],
-            color: Colors.white));
+            color: noteColors[index % noteColors.length]));
+    //TODO: Make colors be the same when you relaunch the app
 
     ref.watch(noteslistProvider.notifier).state = notes;
-
-    print(ref.watch(titlesProvider));
   }
 
   //Incrementing counter after click
@@ -71,11 +73,8 @@ class _HomePageState extends ConsumerState<HomePage> {
 
     final isUserSearching = ref.watch(isUserSearchingProvider);
     final notesWidgetList = List.generate(
-      notesToDisplay.length,
-      (index) => NotesWidget(
-          // key: UniqueKey(),
-          // TODO: fix Note color not persisting when deleting notes from list
-          note: notesToDisplay[index]),
+      notesList.length,
+      (index) => NotesWidget(note: notesList[index]),
     );
 
     final notesEmptyWidget = [
@@ -107,13 +106,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                 children: [
                   const Header(),
                   const VGap(16),
-                  ...List.generate(
-                    ref.watch(notesToDisplayProvider).length,
-                    (index) {
-                      return NotesWidget(
-                          note: ref.watch(notesToDisplayProvider)[index]);
-                    },
-                  )
+                  if (notesWidgetList.isEmpty)
+                    ...notesEmptyWidget
+                  else
+                    ...notesWidgetList
                 ],
               ),
             ),

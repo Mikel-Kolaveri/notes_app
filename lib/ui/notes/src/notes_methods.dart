@@ -1,7 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:notes_app/pages/home_page/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'note.dart';
 
 class NotesMethods extends Notifier<List<Note>> {
@@ -16,6 +14,7 @@ class NotesMethods extends Notifier<List<Note>> {
   void addNote(Note note) {
     state = [...state, note];
     _updateState();
+    // ref.watch(colorListIndexProvider.notifier).state++;
   }
 
   void deleteNote(String id) {
@@ -37,10 +36,6 @@ class NotesMethods extends Notifier<List<Note>> {
         state.map((e) => e.title).toList();
     contents = ref.watch(contentsProvider.notifier).state =
         state.map((e) => e.content).toList();
-    // titles = ref.watch(titlesProvider);
-    // contents = ref.watch(contentsProvider);
-    // print(ref.watch(titlesProvider));
-    // print(ref.watch(contentsProvider));
     saveLocalData();
   }
 
@@ -50,8 +45,6 @@ class NotesMethods extends Notifier<List<Note>> {
     prefs.setStringList('titlesList', titles);
 
     prefs.setStringList('contentsList', contents);
-
-    print(titles);
   }
 }
 
