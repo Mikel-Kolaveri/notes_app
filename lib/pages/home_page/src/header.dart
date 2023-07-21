@@ -8,7 +8,7 @@ import '../../../ui/custom_icon_button.dart';
 import '../../../ui/notes/src/note.dart';
 
 final searchListProvider = StateProvider<List<Note>>((ref) {
-  return ref.watch(noteslistProvider);
+  return ref.watch(notesToDisplayProvider);
 });
 
 final isUserSearchingProvider = StateProvider<bool>((ref) {
@@ -49,6 +49,7 @@ class _HeaderState extends ConsumerState<Header> {
       ),
       CustomIconButton(icon: Icons.info_outline, onPressed: () {})
     ]);
+    //TODO: Make searchfield not go blank after deleting a note while searching
 
     return SizedBox(
       height: 56,
